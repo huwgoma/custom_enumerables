@@ -1,5 +1,6 @@
 require 'pry'
 
+
 module Enumerable
   def my_each
     return Enumerator.new(self) unless block_given?
@@ -17,19 +18,26 @@ module Enumerable
 end
 
 module Testable
+  def test_my_each(array, hash)
+    puts "each"
+    array.each { |item| puts item }
+    hash.each { |key, value| puts "#{key}: #{value}"}
 
+    puts "my_each"
+    array.my_each { |item| puts item }
+    hash.my_each { |key, value| puts "#{key}: #{value}"}
+
+    #no block 
+    array.my_each
+    hash.my_each
+  end
 end
 
-puts "my_each vs. each"
+include Testable
+
 numbers = [1,2,3,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-#numbers.each { |number| puts number }
-hash.each { |key, value| puts "#{key}: #{value}"}
 
-#
-hash.my_each { |key, value| puts "#{key}: #{value}"}
-
-#numbers.my_each { |number| puts number }
-
-#numbers.my_each
+puts "my_each vs. each"
+test_my_each(numbers, hash)
