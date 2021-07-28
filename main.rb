@@ -66,12 +66,28 @@ module Enumerable
     end
     return_value
   end
+
+  def my_all?(&block)
+    enum_type = self.class
+
+    i = 0 
+    loop do 
+      returned_value = block.call(self[i]) if enum_type == Array
+      returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
+
+      return false unless returned_value
+      i+=1
+      break if i > self.length - 1 
+
+    end
+    true
+  end
 end
 
 numbers = [1,2,3,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_select(numbers, hash)
+test_my_all?(numbers, hash)
 
 # binding.pry
 puts 'end'

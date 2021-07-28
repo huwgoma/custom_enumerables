@@ -28,4 +28,26 @@ module Testable
     p array.my_select { |item| [1, 3].include?(item) }
     p hash.my_select { |key,value| key == :a || value == 'b value' }
   end
+
+  def test_my_all?(array, hash)
+    puts 'all?'
+    p array.all? { |item| Integer === item }
+    p array.all? { |item| item < 5 }
+    p hash.all? { |key, value| value.class == String }
+    p hash.all? { |key, value| key == :a }
+
+    # p [1, 2, 3, nil].all?
+
+    # p array.all?(Integer)
+
+
+    puts 'my_all?'
+    p array.my_all? { |item| Integer === item }
+    p array.my_all? { |item| item < 3 }
+    p hash.my_all? { |key, value| value.class == String }
+    p hash.my_all? { |key, value| key == :a }
+
+    # p [1, 2, 3, nil].my_all?
+    # p array.my_all?(Integer)
+  end
 end
