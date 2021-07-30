@@ -126,4 +126,17 @@ module Testable
     p array.my_count { |item| item > 3 }
     p hash.my_count { |key, value| key == :a }
   end
+
+  def test_my_map(array, hash)
+    puts 'map'.bold
+    p array.map
+    p array.map { |item| item + 1 }
+    p hash.map { |key, value| value = 'map' }
+
+    puts 'my_map'.bold
+    p array.my_map
+    p array.my_map { |item| item + 1 }
+    p hash.my_map { |key, value| value = 'map' }
+
+  end
 end

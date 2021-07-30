@@ -5,8 +5,8 @@ require 'colorize'
 include Testable
 
 module Enumerable 
-  def enum
-    Enumerator.new(self)
+  def enum(method)
+    Enumerator.new(self, method)
   end
   
   def block_if_pattern_given(pattern)
@@ -23,7 +23,7 @@ module Enumerable
 
   #
   def my_each
-    return enum unless block_given?
+    return enum(:my_each) unless block_given?
     enum_type = self.class
     
     i = 0
@@ -36,7 +36,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    return enum unless block_given?
+    return enum(:my_each_with_index) unless block_given?
     enum_type = self.class
 
     i = 0 
@@ -50,7 +50,7 @@ module Enumerable
   end
 
   def my_select
-    return enum unless block_given?
+    return enum(:my_select) unless block_given?
     enum_type = self.class
     return_value = enum_type == Array ? [] : {}
     
@@ -150,12 +150,25 @@ module Enumerable
     end
     count
   end
+
+  def my_map(&block)
+    return enum(:my_map) unless block_given?
+    #return_value = self.is_a?(Array) ? [] : {}
+    return_value = []
+    i = 0
+    while i < self.length 
+      return_value << block.call(self[i]) if self.is_a?(Array)
+      return_value << block.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
+      i += 1
+    end
+    return_value
+  end
 end
 
 numbers = [1,2,3,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_count(numbers, hash)
+test_my_map(numbers, hash)
 
 # binding.pry
 puts 'end'.bold
