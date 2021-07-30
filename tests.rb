@@ -42,7 +42,6 @@ module Testable
     p array.all?(Integer)
     p array.all?(Integer) {|item|}
 
-
     puts 'my_all?'.bold
     p array.my_all? { |item| Integer === item }
     p array.my_all? { |item| item < 3 }
@@ -66,9 +65,8 @@ module Testable
     p [1, 2, 3, nil].any?
     p hash.any? 
 
-    # p array.any?(Integer)
-    # p array.any?(Integer) {|item|}
-
+    p array.any?(String)
+    p array.any?(Integer) {|item|}
 
     puts 'my_any?'.bold
     # p array.my_any? { |item| Integer === item }
@@ -79,7 +77,15 @@ module Testable
     p [1, 2, 3, nil].my_any?
     p hash.my_any?
 
-    # p array.my_any?(Integer)
-    # p array.my_any?(Integer) {|item|}
+    p array.my_any?(String)
+    p array.my_any?(Integer) {|item|}
+  end
+
+  def test_my_none?(array, hash)
+    p array.none? { |item| item == 1 }
+    p array.none? { |item| item == '1' }
+
+    p array.my_none? { |item| item == 1 }
+    p array.my_none? { |item| item == '1' }
   end
 end
