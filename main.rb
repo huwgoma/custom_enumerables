@@ -14,20 +14,6 @@ module Enumerable
     enum_type = self.class
     
     i = 0
-    # if enum_type == Array
-    #   loop do 
-    #     yield(self[i])
-    #     i+=1
-    #     break if i > self.length - 1
-    #   end
-    # elsif enum_type == Hash
-    #   loop do 
-    #     yield(self.keys[i], self.values[i])
-    #     i+=1
-    #     break if i > self.length - 1
-    #   end
-    # end
-
     loop do 
       yield(self[i]) if enum_type == Array
       yield(self.keys[i], self.values[i]) if enum_type == Hash
@@ -88,6 +74,21 @@ module Enumerable
       break if i > self.length - 1 
     end
     true
+  end
+
+  def my_any?(pattern = (arg_not_passed = true; nil), &block)
+    enum_type = self.class
+    arg_passed = !arg_not_passed
+
+    i = 0 
+    loop do 
+      returned_value = block.call(self[i]) if enum_type == Array
+      returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
+      return true if returned_value
+      i+=1
+      break if i > self.length - 1 
+    end
+    false
   end
 end
 

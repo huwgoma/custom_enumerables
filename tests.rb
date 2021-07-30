@@ -57,6 +57,29 @@ module Testable
   end
 
   def test_my_any?(array, hash)
+    puts 'any?'.bold
+    p array.any? { |item| Integer === item }
+    p array.any? { |item| item > 5 }
+    p hash.any? { |key, value| value == 'String' }
+    p hash.any? { |key, value| key == :a }
 
+    # p [1, 2, 3, nil].any?
+    # p hash.any? 
+
+    # p array.any?(Integer)
+    # p array.any?(Integer) {|item|}
+
+
+    puts 'my_any?'.bold
+    p array.my_any? { |item| Integer === item }
+    p array.my_any? { |item| item > 5 }
+    p hash.my_any? { |key, value| value == 'String' }
+    p hash.my_any? { |key, value| key == :a }
+
+    # p [1, 2, 3, nil].my_any?
+    # p hash.my_any?
+
+    # p array.my_any?(Integer)
+    # p array.my_any?(Integer) {|item|}
   end
 end
