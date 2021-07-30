@@ -114,26 +114,30 @@ module Enumerable
   def my_none?(pattern = (arg_not_passed = true; nil), &block)
     enum_type = self.class
     arg_passed = !arg_not_passed
-
-    i = 0 
-    enum_loop(block, enum_type, false)
-    loop do 
-      
-      # returned_value = block.call(self[i]) if enum_type == Array
-      # returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
-      # return false if returned_value
-      # i+=1
+    
+    if arg_passed
+      puts block_not_used_warning(block) if block_given?
+      block = block_if_pattern_given(pattern)
+    elsif !block_given?
+      block = default_block
     end
 
+    i = 0 
+    loop do 
+      returned_value = block.call(self[i]) if enum_type == Array
+      returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
+      return false if returned_value
+      i+=1
+      break if i > self.length - 1
+    end
+    true
   end
 end
 
 numbers = [1,2,3,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_all?(numbers, hash)
-test_my_any?(numbers, hash)
-#test_my_none?(numbers, hash)
+test_my_none?(numbers, hash)
 
 # binding.pry
 puts 'end'.bold

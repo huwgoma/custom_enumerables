@@ -82,10 +82,24 @@ module Testable
   end
 
   def test_my_none?(array, hash)
+    puts 'none?'.bold
     p array.none? { |item| item == 1 }
     p array.none? { |item| item == '1' }
+    
+    p [1,2,3,nil].none?
+    p hash.none?
 
+    p array.none?(String)
+    p array.none?(Integer) {|item|}
+
+    puts 'my_none?'.bold
     p array.my_none? { |item| item == 1 }
     p array.my_none? { |item| item == '1' }
+    
+    p [1,2,3,nil].my_none?
+    p hash.my_none?
+
+    p array.my_none?(String)
+    p array.my_none?(Integer) {|item|}
   end
 end
