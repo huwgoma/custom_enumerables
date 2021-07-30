@@ -137,6 +137,24 @@ module Testable
     p array.my_map
     p array.my_map { |item| item + 1 }
     p hash.my_map { |key, value| value = 'map' }
+  end
 
+  #Reduce
+  def test_my_reduce(array, hash)
+    puts 'reduce'.bold
+    #array.reduce
+    p array.reduce { |sum, item| sum + item }
+    p array.reduce(10) { |sum, item| sum + item }
+    p array.reduce(:+)
+    p array.reduce(10, :+)
+    #p hash.reduce('') { |sum, kv| sum + kv[1] }
+    
+    puts 'my_reduce'.bold
+    #array.my_reduce
+    p array.my_reduce { |sum, item| sum + item }
+  end
+
+  def multiply_items(array)
+    array.my_reduce
   end
 end

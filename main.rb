@@ -153,7 +153,6 @@ module Enumerable
 
   def my_map(&block)
     return enum(:my_map) unless block_given?
-    #return_value = self.is_a?(Array) ? [] : {}
     return_value = []
     i = 0
     while i < self.length 
@@ -163,12 +162,35 @@ module Enumerable
     end
     return_value
   end
+
+  def my_reduce(
+    initial = (initial_not_given = true; nil),
+    sym = (sym_not_given = true; nil), 
+    &block
+  )
+    initial_given = !initial_not_given
+    sym_given = !sym_not_given
+    raise LocalJumpError.new('no block given') unless block_given? || initial_given
+  
+    i = 0 
+    if initial_not_given
+      initial = self[0] 
+      i += 1 
+    end
+    memo = initial
+    while i < self.length
+      obj = self.is_a?(Array) ? self[i] : [self.keys[i], self.values[i]]
+      memo = block.call(memo, obj)
+      i += 1
+    end
+    memo
+  end
 end
 
 numbers = [1,2,3,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_map(numbers, hash)
+test_my_reduce(numbers, hash)
 
 # binding.pry
 puts 'end'.bold
