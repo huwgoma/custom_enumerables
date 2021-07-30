@@ -9,6 +9,30 @@ module Enumerable
     Enumerator.new(self)
   end
 
+  def alternate_block(arg_passed, block_given, block, pattern)
+    if arg_passed
+      puts block_not_used_warning(block) if block_given
+      block_if_pattern_given(pattern)
+    elsif !block_given
+      default_block
+    else
+      block
+    end
+  end
+
+  def block_if_pattern_given(pattern)
+    Proc.new { |object| pattern === object }
+  end
+
+  def default_block
+    Proc.new { |object| object }
+  end
+
+  def block_not_used_warning(block)
+    "#{block.source_location.join(':')}: warning: given block not used"
+  end
+
+  #
   def my_each
     return enum unless block_given?
     enum_type = self.class
@@ -57,13 +81,7 @@ module Enumerable
   def my_all?(pattern = (arg_not_passed = true; nil), &block)
     enum_type = self.class
     arg_passed = !arg_not_passed
-    
-    if arg_passed
-      puts "#{block.source_location.join(':')}: warning: given block not used" if block_given?
-      block = Proc.new { |object| pattern === object }
-    elsif !block_given?
-      block = Proc.new { |object| object }
-    end
+    block = alternate_block(arg_passed, block_given?, block, pattern)
 
     i = 0 
     loop do 
@@ -79,6 +97,7 @@ module Enumerable
   def my_any?(pattern = (arg_not_passed = true; nil), &block)
     enum_type = self.class
     arg_passed = !arg_not_passed
+    block = alternate_block(arg_passed, block_given?, block, pattern)
 
     i = 0 
     loop do 
@@ -95,6 +114,7 @@ end
 numbers = [1,2,3,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
+#test_my_all?(numbers, hash)
 test_my_any?(numbers, hash)
 
 # binding.pry
