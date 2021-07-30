@@ -102,4 +102,28 @@ module Testable
     p array.my_none?(String)
     p array.my_none?(Integer) {|item|}
   end
+
+  def test_my_count(array, hash)
+    puts 'count'.bold
+    p array.count
+    p hash.count
+
+    p array.count(1)
+    p hash.count(0)
+    p array.count(1) { |item| }
+
+    p array.count { |item| item > 3 }
+    p hash.count { |key, value| key == :a }
+
+    puts 'my_count'.bold
+    p array.my_count
+    p hash.my_count
+
+    p array.my_count(1)
+    p hash.my_count(0)
+    p array.my_count(1) { |item| } 
+    
+    p array.my_count { |item| item > 3 }
+    p hash.my_count { |key, value| key == :a }
+  end
 end
