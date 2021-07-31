@@ -163,15 +163,25 @@ module Enumerable
     return_value
   end
 
-  def my_reduce(
-    initial = (initial_not_given = true; nil),
+  def my_reduce(initial = (initial_not_given = true; nil),
     sym = (sym_not_given = true; nil), 
-    &block
-  )
-    initial_given = !initial_not_given
-    sym_given = !sym_not_given
-    raise LocalJumpError.new('no block given') unless block_given? || initial_given
-  
+    &block)
+
+    if initial.is_a?(Symbol) && sym_not_given
+      sym, initial = initial, sym
+      initial_not_given = true
+      sym_not_given = nil
+      block = -> (memo, obj) { memo.send(sym, obj) }
+      binding.pry
+    elsif initial && sym
+      binding.pry
+    end
+
+    argument_given = initial || sym
+
+    raise LocalJumpError.new('no block given') unless block_given? || argument_given
+    
+    
     i = 0 
     if initial_not_given
       initial = self[0] 
