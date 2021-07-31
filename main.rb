@@ -151,17 +151,29 @@ module Enumerable
     count
   end
 
-  def my_map(&block)
-    return enum(:my_map) unless block_given?
+  # def my_map(&block)
+  #   return enum(:my_map) unless block_given?
+  #   return_value = []
+  #   i = 0
+  #   while i < self.length 
+  #     return_value << block.call(self[i]) if self.is_a?(Array)
+  #     return_value << block.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
+  #     i += 1
+  #   end
+  #   return_value
+  # end
+  def my_map(proc)
+    return enum(:my_map) unless proc.is_a?(Proc)
     return_value = []
     i = 0
     while i < self.length 
-      return_value << block.call(self[i]) if self.is_a?(Array)
-      return_value << block.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
+      return_value << proc.call(self[i]) if self.is_a?(Array)
+      return_value << proc.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
       i += 1
     end
     return_value
   end
+
 
   def my_reduce(initial = (initial_not_given = true; nil),
     sym = (sym_not_given = true; nil), 
@@ -195,8 +207,7 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-#test_my_reduce(numbers, hash)
-multiply_items(numbers)
+test_my_map_alt(numbers, hash)
 
 # binding.pry
 puts 'end'.bold
