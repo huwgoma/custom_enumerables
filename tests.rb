@@ -153,9 +153,9 @@ module Testable
 
     puts 'my_reduce'.bold
     #array.my_reduce
-    # p array.my_reduce { |sum, item| sum + item }
-    # p hash.my_reduce('') { |sum, kv| sum + kv[1] }
-    # p array.my_reduce(10) { |sum, item| sum + item }
+    p array.my_reduce { |sum, item| sum + item }
+    p hash.my_reduce('') { |sum, kv| sum + kv[1] }
+    p array.my_reduce(10) { |sum, item| sum + item }
 
     p array.my_reduce(:+)
     p array.my_reduce(10, :+)

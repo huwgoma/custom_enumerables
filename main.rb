@@ -172,9 +172,9 @@ module Enumerable
       initial_not_given = true
       sym_not_given = nil
       block = -> (memo, obj) { memo.send(sym, obj) }
-      binding.pry
+      
     elsif initial && sym
-      binding.pry
+      block = -> (memo, obj) { memo.send(sym, obj) }
     end
 
     argument_given = initial || sym
