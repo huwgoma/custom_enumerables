@@ -166,22 +166,17 @@ module Enumerable
   def my_reduce(initial = (initial_not_given = true; nil),
     sym = (sym_not_given = true; nil), 
     &block)
+    argument_given = initial || sym
+    raise LocalJumpError.new('no block given') unless block_given? || argument_given
 
     if initial.is_a?(Symbol) && sym_not_given
       sym, initial = initial, sym
-      initial_not_given = true
-      sym_not_given = nil
+      initial_not_given = true; sym_not_given = nil
       block = -> (memo, obj) { memo.send(sym, obj) }
-      
     elsif initial && sym
       block = -> (memo, obj) { memo.send(sym, obj) }
     end
 
-    argument_given = initial || sym
-
-    raise LocalJumpError.new('no block given') unless block_given? || argument_given
-    
-    
     i = 0 
     if initial_not_given
       initial = self[0] 
