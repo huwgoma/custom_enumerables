@@ -162,6 +162,6 @@ module Testable
   end
 
   def multiply_items(array)
-    array.my_reduce
+    p array.my_reduce(:*)
   end
 end

@@ -192,10 +192,11 @@ module Enumerable
   end
 end
 
-numbers = [1,2,3,4,5]
+numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_reduce(numbers, hash)
+#test_my_reduce(numbers, hash)
+multiply_items(numbers)
 
 # binding.pry
 puts 'end'.bold
