@@ -140,10 +140,13 @@ module Testable
     p hash.my_map { |key, value| value = 'map' }
   end
 
-  def test_my_map_alt(array, hash)
+  def test_my_map_modified(array, hash)
     puts 'my_map'.bold
     a_proc = Proc.new {|item| item + 1 }
+
     p array.my_map(a_proc)
+    p array.my_map { |item| item + 2 }
+    p array.my_map(a_proc) { |item| item + 2 }
   end
 
   #Reduce
