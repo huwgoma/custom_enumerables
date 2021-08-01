@@ -44,38 +44,43 @@ module Enumerable
     self
   end
 
-  def my_select
+  # def my_select
+  #   return enum(:my_select) unless block_given?
+  #   return_value = self.is_a?(Array) ? [] : {}
+    
+  #   i = 0
+  #   while i < self.length 
+  #     case self
+  #     when Array
+  #       return_value << self[i] if yield(self[i])
+  #     when Hash
+  #       return_value[self.keys[i]] = self.values[i] if  yield(self.keys[i], self.values[i])
+  #     end
+  #     i += 1
+  #   end
+  #   return_value
+  # end
+
+  def my_select(&block)
     return enum(:my_select) unless block_given?
     return_value = self.is_a?(Array) ? [] : {}
     
-    i = 0
-    while i < self.length 
-      case self
-      when Array
-        return_value << self[i] if yield(self[i])
-      when Hash
-        return_value[self.keys[i]] = self.values[i] if  yield(self.keys[i], self.values[i])
-      end
-      i += 1
+    case self
+    when Array
+      self.my_each { |item| return_value << item if block.call(item) }
+    when Hash
+      self.my_each { |k, v| return_value[k] = v if block.call(k, v)}
     end
     return_value
   end
 
   def my_all?(pattern = (arg_not_passed = true; nil), &block)
     arg_passed = !arg_not_passed
-    
     if arg_passed 
       puts block_not_used_warning(block) if block_given?
       block = block_if_pattern_given(pattern)
     end
-    block = default_block unless pattern || block 
-    
-    # if arg_passed
-    #   puts block_not_used_warning(block) if block_given?
-    #   block = block_if_pattern_given(pattern)
-    # elsif !block_given?
-    #   block = default_block
-    # end
+    block = default_block unless arg_passed || block 
 
     i = 0 
     while i < self.length
@@ -90,42 +95,36 @@ module Enumerable
   def my_any?(pattern = (arg_not_passed = true; nil), &block)
     enum_type = self.class
     arg_passed = !arg_not_passed
-    if arg_passed
+    if arg_passed 
       puts block_not_used_warning(block) if block_given?
       block = block_if_pattern_given(pattern)
-    elsif !block_given?
-      block = default_block
     end
+    block = default_block unless arg_passed || block 
 
     i = 0 
-    loop do 
-      returned_value = block.call(self[i]) if enum_type == Array
-      returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
+    while i < self.length 
+      returned_value = self.is_a?(Array) ? block.call(self[i]) :
+        block.call(self.keys[i], self.values[i])
       return true if returned_value
-      i+=1
-      break if i > self.length - 1 
+      i+=1 
     end
     false
   end
 
   def my_none?(pattern = (arg_not_passed = true; nil), &block)
-    enum_type = self.class
     arg_passed = !arg_not_passed
-    
-    if arg_passed
+    if arg_passed 
       puts block_not_used_warning(block) if block_given?
       block = block_if_pattern_given(pattern)
-    elsif !block_given?
-      block = default_block
     end
+    block = default_block unless arg_passed || block 
 
     i = 0 
-    loop do 
-      returned_value = block.call(self[i]) if enum_type == Array
-      returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
+    while i < self.length
+      returned_value = self.is_a?(Array) ? block.call(self[i]) : 
+        block.call(self.keys[i], self.values[i])
       return false if returned_value
       i += 1
-      break if i > self.length - 1
     end
     true
   end
@@ -208,7 +207,7 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_all?(numbers, hash)
+test_my_select(numbers, hash)
 
 # binding.pry
 puts 'end'.bold

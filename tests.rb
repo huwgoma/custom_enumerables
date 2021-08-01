@@ -21,11 +21,11 @@ module Testable
 
   def test_my_select(array, hash)
     puts 'select'.bold
-    p array.select { |item| [1, 3].include?(item) }
+    p array.select { |item| [2, 3].include?(item) }
     p hash.select { |key, value| key == :a || value == 'b value' }
     
     puts 'my_select'.bold
-    p array.my_select { |item| [1, 3].include?(item) }
+    p array.my_select { |item| [2, 3].include?(item) }
     p hash.my_select { |key,value| key == :a || value == 'b value' }
   end
 
