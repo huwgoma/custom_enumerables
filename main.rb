@@ -5,6 +5,7 @@ require 'colorize'
 include Testable
 
 module Enumerable 
+  #Helper methods
   def enum(method)
     Enumerator.new(self, method)
   end
@@ -21,69 +22,67 @@ module Enumerable
     "#{block.source_location.join(':')}: warning: given block not used"
   end
 
-  #
+  #Enumerables
   def my_each
     return enum(:my_each) unless block_given?
-    enum_type = self.class
     
     i = 0
-    loop do 
-      yield(self[i]) if enum_type == Array
-      yield(self.keys[i], self.values[i]) if enum_type == Hash
+    while i < self.length
+      self.is_a?(Array) ? yield(self[i]) : yield(self.keys[i], self.values[i])
       i+=1
-      break if i > self.length - 1
     end
   end
 
   def my_each_with_index
     return enum(:my_each_with_index) unless block_given?
-    enum_type = self.class
 
     i = 0 
-    loop do 
-      yield(self[i], i) if enum_type == Array
-      yield([self.keys[i], self.values[i]], i) if enum_type == Hash
+    while i < self.length 
+      self.is_a?(Array) ? yield(self[i], i) : yield([self.keys[i], self.values[i]], i)
       i+=1
-      break if i > self.length - 1
     end
     self
   end
 
   def my_select
     return enum(:my_select) unless block_given?
-    enum_type = self.class
-    return_value = enum_type == Array ? [] : {}
+    return_value = self.is_a?(Array) ? [] : {}
     
     i = 0
-    loop do 
-      if enum_type == Array
-        return_value.push(self[i]) if yield(self[i])
-      elsif enum_type == Hash
-        return_value[self.keys[i]] = self.values[i] if yield(self.keys[i], self.values[i])
+    while i < self.length 
+      case self
+      when Array
+        return_value << self[i] if yield(self[i])
+      when Hash
+        return_value[self.keys[i]] = self.values[i] if  yield(self.keys[i], self.values[i])
       end
-      i+=1
-      break if i > self.length - 1
+      i += 1
     end
     return_value
   end
 
   def my_all?(pattern = (arg_not_passed = true; nil), &block)
-    enum_type = self.class
     arg_passed = !arg_not_passed
-    if arg_passed
+    
+    if arg_passed 
       puts block_not_used_warning(block) if block_given?
       block = block_if_pattern_given(pattern)
-    elsif !block_given?
-      block = default_block
     end
+    block = default_block unless pattern || block 
+    
+    # if arg_passed
+    #   puts block_not_used_warning(block) if block_given?
+    #   block = block_if_pattern_given(pattern)
+    # elsif !block_given?
+    #   block = default_block
+    # end
 
     i = 0 
-    loop do 
-      returned_value = block.call(self[i]) if enum_type == Array
-      returned_value = block.call(self.keys[i], self.values[i]) if enum_type == Hash
+    while i < self.length
+      returned_value = self.is_a?(Array) ? block.call(self[i]) : 
+        block.call(self.keys[i], self.values[i])
       return false unless returned_value
       i+=1
-      break if i > self.length - 1 
     end
     true
   end
@@ -209,7 +208,7 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_map_modified(numbers, hash)
+test_my_all?(numbers, hash)
 
 # binding.pry
 puts 'end'.bold
