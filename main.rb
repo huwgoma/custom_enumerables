@@ -44,27 +44,10 @@ module Enumerable
     self
   end
 
-  # def my_select
-  #   return enum(:my_select) unless block_given?
-  #   return_value = self.is_a?(Array) ? [] : {}
-    
-  #   i = 0
-  #   while i < self.length 
-  #     case self
-  #     when Array
-  #       return_value << self[i] if yield(self[i])
-  #     when Hash
-  #       return_value[self.keys[i]] = self.values[i] if  yield(self.keys[i], self.values[i])
-  #     end
-  #     i += 1
-  #   end
-  #   return_value
-  # end
-
   def my_select(&block)
     return enum(:my_select) unless block_given?
     return_value = self.is_a?(Array) ? [] : {}
-    
+
     case self
     when Array
       self.my_each { |item| return_value << item if block.call(item) }
@@ -82,13 +65,8 @@ module Enumerable
     end
     block = default_block unless arg_passed || block 
 
-    i = 0 
-    while i < self.length
-      returned_value = self.is_a?(Array) ? block.call(self[i]) : 
-        block.call(self.keys[i], self.values[i])
-      return false unless returned_value
-      i+=1
-    end
+    self.my_each { |item| return false unless block.call(item) } if self.is_a?(Array)
+    self.my_each { |k,v| return false unless block.call(k, v) } if self.is_a?(Hash)
     true
   end
 
@@ -207,7 +185,7 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_select(numbers, hash)
+test_my_all?(numbers, hash)
 
 # binding.pry
 puts 'end'.bold

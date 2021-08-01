@@ -31,22 +31,21 @@ module Testable
 
   def test_my_all?(array, hash)
     puts 'all?'.bold
-    # p array.all? { |item| Integer === item }
-    # p array.all? { |item| item < 5 }
-    # p hash.all? { |key, value| value.class == String }
-    # p hash.all? { |key, value| key == :a }
+    p array.all? { |item| Integer === item }
+    p array.all? { |item| item < 5 }
+    p hash.all? { |key, value| value.class == String }
+    p hash.all? { |key, value| key == :a }
 
     p [1, 2, 3, nil].all?
     p hash.all? 
-
     p array.all?(Integer)
     p array.all?(Integer) {|item|}
 
     puts 'my_all?'.bold
-    # p array.my_all? { |item| Integer === item }
-    # p array.my_all? { |item| item < 3 }
-    # p hash.my_all? { |key, value| value.class == String }
-    # p hash.my_all? { |key, value| key == :a }
+    p array.my_all? { |item| Integer === item }
+    p array.my_all? { |item| item < 3 }
+    p hash.my_all? { |key, value| value.class == String }
+    p hash.my_all? { |key, value| key == :a }
 
     p [1, 2, 3, nil].my_all?
     p hash.my_all?
