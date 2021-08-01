@@ -106,18 +106,8 @@ module Enumerable
     end
 
     count = 0
-    self.my_each { |item| count += 1 if block.call(item) }
-    binding.pry
-
-
-    i = 0
-    count = 0
-    while i < self.length
-      returned_value = block.call(self[i]) if self.is_a?(Array)
-      returned_value = block.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
-      count += 1 if returned_value
-      i += 1
-    end
+    self.my_each { |item| count += 1 if block.call(item) } if self.is_a?(Array)
+    self.my_each { |k, v| count += 1 if block.call(k, v) } if self.is_a?(Hash)
     count
   end
 
@@ -135,17 +125,12 @@ module Enumerable
   def my_map(proc = nil, &block)
     return enum(:my_map) unless proc.is_a?(Proc) || block_given?
     block = proc if proc 
-    #binding.pry
     return_value = []
-    i = 0
-    while i < self.length 
-      return_value << block.call(self[i]) if self.is_a?(Array)
-      return_value << block.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
-      i += 1
-    end
+
+    self.my_each { |item| return_value << block.call(item) } if self.is_a?(Array)
+    self.my_each { |k, v| return_value << block.call(k, v) } if self.is_a?(Hash)
     return_value
   end
-
 
   def my_reduce(initial = (initial_not_given = true; nil),
     sym = (sym_not_given = true; nil), 
@@ -179,7 +164,7 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_none?(numbers, hash)
+test_my_map_modified(numbers, hash)
 
 # binding.pry
 puts 'end'.bold
