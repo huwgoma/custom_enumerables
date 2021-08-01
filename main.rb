@@ -71,7 +71,6 @@ module Enumerable
   end
 
   def my_any?(pattern = (arg_not_passed = true; nil), &block)
-    enum_type = self.class
     arg_passed = !arg_not_passed
     if arg_passed 
       puts block_not_used_warning(block) if block_given?
@@ -79,13 +78,8 @@ module Enumerable
     end
     block = default_block unless arg_passed || block 
 
-    i = 0 
-    while i < self.length 
-      returned_value = self.is_a?(Array) ? block.call(self[i]) :
-        block.call(self.keys[i], self.values[i])
-      return true if returned_value
-      i+=1 
-    end
+    self.my_each { |item| return true if block.call(item) } if self.is_a?(Array)
+    self.my_each { |k, v| return true if block.call(k, v) } if self.is_a?(Hash)
     false
   end
 
@@ -97,13 +91,8 @@ module Enumerable
     end
     block = default_block unless arg_passed || block 
 
-    i = 0 
-    while i < self.length
-      returned_value = self.is_a?(Array) ? block.call(self[i]) : 
-        block.call(self.keys[i], self.values[i])
-      return false if returned_value
-      i += 1
-    end
+    self.my_each { |item| return false if block.call(item) } if self.is_a?(Array)
+    self.my_each { |k, v| return false if block.call(k, v) } if self.is_a?(Hash)
     true
   end
 
@@ -115,6 +104,11 @@ module Enumerable
       puts block_not_used_warning(block) if block_given?
       block = block_if_pattern_given(item)
     end
+
+    count = 0
+    self.my_each { |item| count += 1 if block.call(item) }
+    binding.pry
+
 
     i = 0
     count = 0
@@ -185,7 +179,7 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_all?(numbers, hash)
+test_my_none?(numbers, hash)
 
 # binding.pry
 puts 'end'.bold
