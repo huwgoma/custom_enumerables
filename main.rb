@@ -111,17 +111,6 @@ module Enumerable
     count
   end
 
-  # def my_map(&block)
-  #   return enum(:my_map) unless block_given?
-  #   return_value = []
-  #   i = 0
-  #   while i < self.length 
-  #     return_value << block.call(self[i]) if self.is_a?(Array)
-  #     return_value << block.call(self.keys[i], self.values[i]) if self.is_a?(Hash)
-  #     i += 1
-  #   end
-  #   return_value
-  # end
   def my_map(proc = nil, &block)
     return enum(:my_map) unless proc.is_a?(Proc) || block_given?
     block = proc if proc 
@@ -146,17 +135,10 @@ module Enumerable
       block = -> (memo, obj) { memo.send(sym, obj) }
     end
 
-    i = 0 
-    if initial_not_given
-      initial = self[0] 
-      i += 1 
-    end
+    skip = initial_not_given ? 1 : 0
+    initial = self.first if initial_not_given
     memo = initial
-    while i < self.length
-      obj = self.is_a?(Array) ? self[i] : [self.keys[i], self.values[i]]
-      memo = block.call(memo, obj)
-      i += 1
-    end
+    self.drop(skip).my_each { |obj| memo = block.call(memo, obj) }
     memo
   end
 end
@@ -164,7 +146,6 @@ end
 numbers = [2,4,5]
 hash = { a: 'a value', b: 'b value', c: 'c value' }
 
-test_my_map_modified(numbers, hash)
+test_my_reduce(numbers, hash)
 
-# binding.pry
 puts 'end'.bold

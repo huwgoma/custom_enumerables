@@ -125,7 +125,6 @@ module Testable
     p hash.my_count { |key, value| key == :a }
   end
 
-  #map
   def test_my_map(array, hash)
     puts 'map'.bold
     p array.map
@@ -136,10 +135,8 @@ module Testable
     p array.my_map
     p array.my_map { |item| item + 1 }
     p hash.my_map { |key, value| value = 'map' }
-  end
 
-  def test_my_map_modified(array, hash)
-    puts 'my_map'.bold
+    puts 'my_map - modified'.bold
     a_proc = Proc.new {|item| item + 1 }
 
     p array.my_map(a_proc)
